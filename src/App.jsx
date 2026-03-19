@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { categories, featuredStats, places } from "./data/places";
+import { getPlacePhotoUrls, hasGooglePlacesPhotoAccess } from "./services/googlePlacesPhotos";
 
 const features = [
   {
@@ -215,6 +216,50 @@ function HomePage() {
   );
 }
 
+function usePlaceGallery(place, limit = 6) {
+  const [gallery, setGallery] = useState(place.imageSource === "repository" ? place.gallery : []);
+  const [loading, setLoading] = useState(place.imageSource !== "repository");
+
+  useEffect(() => {
+    let mounted = true;
+
+    if (place.imageSource === "repository") {
+      setGallery(place.gallery);
+      setLoading(false);
+      return () => {
+        mounted = false;
+      };
+    }
+
+    if (!hasGooglePlacesPhotoAccess) {
+      setGallery([]);
+      setLoading(false);
+      return () => {
+        mounted = false;
+      };
+    }
+
+    setLoading(true);
+    getPlacePhotoUrls(place.mapsQuery, limit).then((photos) => {
+      if (mounted) {
+        setGallery(photos);
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [limit, place.gallery, place.imageSource, place.mapsQuery, place.slug]);
+
+  return { gallery, loading };
+}
+
+function usePlaceCoverImage(place) {
+  const { gallery } = usePlaceGallery(place, 1);
+  return place.imageSource === "repository" ? place.coverImage : gallery[0] || "";
+}
+
 function PlacePage() {
   const { slug } = useParams();
   const place = places.find((item) => item.slug === slug);
@@ -224,15 +269,17 @@ function PlacePage() {
   }
 
   const relatedPlaces = places.filter((item) => item.slug !== slug).slice(0, 3);
+  const { gallery: placeGallery, loading: isGalleryLoading } = usePlaceGallery(place, 6);
+  const placeCover = place.imageSource === "repository" ? place.coverImage : placeGallery[0] || "";
   const galleryEyebrow =
-    place.imageSource === "repository" ? "Fotos do repositorio" : "Galeria do Google Maps";
+    place.imageSource === "repository" ? "Fotos do repositorio" : "Galeria real do local (Google Maps)";
   const galleryTitle =
     place.imageSource === "repository"
       ? "Imagens locais priorizadas para este lugar"
-      : "Imagens buscadas na galeria do local no Maps";
-  const heroStyle = place.coverImage
+      : "Fotos do local buscadas via Google Places";
+  const heroStyle = placeCover
     ? {
-        backgroundImage: `linear-gradient(180deg, rgba(9, 22, 26, 0.16) 0%, rgba(9, 22, 26, 0.86) 100%), url(${place.coverImage})`,
+        backgroundImage: `linear-gradient(180deg, rgba(9, 22, 26, 0.16) 0%, rgba(9, 22, 26, 0.86) 100%), url(${placeCover})`,
       }
     : {};
 
@@ -291,17 +338,28 @@ function PlacePage() {
 
             <article className="content-block">
               <SectionHeading eyebrow={galleryEyebrow} title={galleryTitle} />
-              <div className="gallery-grid">
-                {place.gallery.map((image, index) => (
-                  <MapPreviewImage
-                    key={image}
-                    className={index === 0 ? "gallery-image gallery-image-wide" : "gallery-image"}
-                    src={image}
-                    alt={`${place.name} - mapa ${index + 1}`}
-                    accent={place.accent}
-                  />
-                ))}
-              </div>
+              {placeGallery.length > 0 ? (
+                <div className="gallery-grid">
+                  {placeGallery.map((image, index) => (
+                    <MapPreviewImage
+                      key={`${place.slug}-photo-${index}`}
+                      className={index === 0 ? "gallery-image gallery-image-wide" : "gallery-image"}
+                      src={image}
+                      alt={`${place.name} - foto ${index + 1}`}
+                      accent={place.accent}
+                    />
+                  ))}
+                </div>
+              ) : isGalleryLoading ? (
+                <p className="gallery-empty-note">Carregando fotos reais do local...</p>
+              ) : (
+                <p className="gallery-empty-note">
+                  Fotos do Google Places indisponiveis para este local agora.
+                  {!hasGooglePlacesPhotoAccess
+                    ? " Configure VITE_GOOGLE_MAPS_API_KEY e habilite Places API (New)."
+                    : " Verifique a chave/API ou tente novamente em instantes."}
+                </p>
+              )}
             </article>
           </div>
 
@@ -340,15 +398,20 @@ function PlacePage() {
 }
 
 function PlaceCard({ place }) {
+  const coverImage = usePlaceCoverImage(place);
   const [imageFailed, setImageFailed] = useState(false);
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [coverImage, place.slug]);
 
   return (
     <article className="place-card">
-      {!imageFailed && place.coverImage ? (
+      {!imageFailed && coverImage ? (
         <img
           className="place-card-image"
-          src={place.coverImage}
-          alt={`Mapa de ${place.name}`}
+          src={coverImage}
+          alt={`Foto de ${place.name}`}
           onError={() => setImageFailed(true)}
         />
       ) : (

@@ -1,4 +1,3 @@
-const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.trim();
 const baseUrl = import.meta.env.BASE_URL || "/";
 
 const localAsset = (path) => {
@@ -6,35 +5,11 @@ const localAsset = (path) => {
   return `${baseUrl}${cleanPath}`;
 };
 
-const withApiKey = (url) => {
-  if (!googleMapsApiKey) {
-    return url;
-  }
-
-  const separator = url.includes("?") ? "&" : "?";
-  return `${url}${separator}key=${encodeURIComponent(googleMapsApiKey)}`;
-};
-
 const createMapsUrl = (query) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
 const createEmbedMapUrl = (query) =>
   `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
-
-const createMapsGallery = (query) => {
-  const encoded = encodeURIComponent(query);
-  return [
-    withApiKey(
-      `https://maps.googleapis.com/maps/api/streetview?size=1280x720&location=${encoded}&fov=90&heading=20&pitch=0`,
-    ),
-    withApiKey(
-      `https://maps.googleapis.com/maps/api/streetview?size=1280x720&location=${encoded}&fov=90&heading=130&pitch=0`,
-    ),
-    withApiKey(
-      `https://maps.googleapis.com/maps/api/streetview?size=1280x720&location=${encoded}&fov=90&heading=250&pitch=0`,
-    ),
-  ];
-};
 
 const basePlaces = [
   {
@@ -411,7 +386,6 @@ const basePlaces = [
 ];
 
 export const places = basePlaces.map((place) => {
-  const mapsGallery = createMapsGallery(place.mapsQuery);
   const hasLocalGallery = place.localGallery.length > 0;
   const normalizedLocalGallery = place.localGallery.map((path) => localAsset(path));
   const normalizedLocalCover = place.localCover ? localAsset(place.localCover) : "";
@@ -421,8 +395,8 @@ export const places = basePlaces.map((place) => {
     mapsUrl: createMapsUrl(place.mapsQuery),
     embedMapUrl: createEmbedMapUrl(place.mapsQuery),
     imageSource: hasLocalGallery ? "repository" : "maps",
-    coverImage: hasLocalGallery ? normalizedLocalCover : mapsGallery[0],
-    gallery: hasLocalGallery ? normalizedLocalGallery : mapsGallery,
+    coverImage: hasLocalGallery ? normalizedLocalCover : "",
+    gallery: hasLocalGallery ? normalizedLocalGallery : [],
   };
 });
 

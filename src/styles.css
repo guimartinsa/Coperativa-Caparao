@@ -699,6 +699,16 @@ img {
   text-align: center;
 }
 
+.gallery-empty-note {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px dashed rgba(27, 34, 35, 0.2);
+  color: var(--muted);
+  line-height: 1.6;
+  background: rgba(255, 255, 255, 0.7);
+}
+
 .detail-sidebar {
   display: grid;
   gap: 20px;
