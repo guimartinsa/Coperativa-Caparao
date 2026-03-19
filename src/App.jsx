@@ -99,7 +99,7 @@ function HomePage() {
         >
           <a className="hero-click-layer" href="#hospedagens" aria-label="Ir para hospedagens" />
           <div className="container hero-inner">
-            <span className="hero-kicker">Cooperativa Caparao</span>
+            <span className="hero-kicker">Cooperativa Vale do Caparao</span>
             <h1>Clique no banner e descubra os lugares separados por categoria.</h1>
             <p>
               A navegacao esta organizada por blocos de hospedagem, gastronomia e destinos,
@@ -471,7 +471,7 @@ function Header() {
       <div className="container header-shell">
         <div className="topbar-main">
           <Link className="brand" to="/">
-            <span className="brand-overline">Cooperativa Caparao</span>
+            <span className="brand-overline">Cooperativa Vale do Caparao</span>
             <strong>Roteiro Caparao</strong>
           </Link>
           <div className="topbar-actions">
