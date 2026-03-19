@@ -264,6 +264,10 @@ function PlacePage() {
   const { slug } = useParams();
   const place = places.find((item) => item.slug === slug);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [slug]);
+
   if (!place) {
     return <NotFoundPage />;
   }
@@ -523,7 +527,7 @@ function Footer() {
       <div className="container footer-content">
         <div className="footer-signature">
           <span className="section-label light">Creditos do projeto</span>
-          <p className="footer-made-by">Site desenvolvido por voce: Guilherme Martins.</p>
+          <p className="footer-made-by">Site desenvolvido por: Guilherme Martins.</p>
           <p className="footer-contact-note">Se quiser, pode falar comigo pelos canais abaixo.</p>
         </div>
         <div className="footer-links">
