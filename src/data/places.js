@@ -1,4 +1,10 @@
 const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.trim();
+const baseUrl = import.meta.env.BASE_URL || "/";
+
+const localAsset = (path) => {
+  const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+  return `${baseUrl}${cleanPath}`;
+};
 
 const withApiKey = (url) => {
   if (!googleMapsApiKey) {
@@ -167,14 +173,16 @@ const basePlaces = [
 export const places = basePlaces.map((place) => {
   const mapsGallery = createMapsGallery(place.mapsQuery);
   const hasLocalGallery = place.localGallery.length > 0;
+  const normalizedLocalGallery = place.localGallery.map((path) => localAsset(path));
+  const normalizedLocalCover = place.localCover ? localAsset(place.localCover) : "";
 
   return {
     ...place,
     mapsUrl: createMapsUrl(place.mapsQuery),
     embedMapUrl: createEmbedMapUrl(place.mapsQuery),
     imageSource: hasLocalGallery ? "repository" : "maps",
-    coverImage: hasLocalGallery ? place.localCover : mapsGallery[0],
-    gallery: hasLocalGallery ? place.localGallery : mapsGallery,
+    coverImage: hasLocalGallery ? normalizedLocalCover : mapsGallery[0],
+    gallery: hasLocalGallery ? normalizedLocalGallery : mapsGallery,
   };
 });
 
