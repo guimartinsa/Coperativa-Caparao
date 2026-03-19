@@ -4,8 +4,14 @@ const createMapsUrl = (query) =>
 const createEmbedMapUrl = (query) =>
   `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
 
-const createStaticMapImage = (query, mapType = "hybrid") =>
-  `https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(query)}&zoom=14&size=1280x720&maptype=${mapType}&markers=color:red|${encodeURIComponent(query)}`;
+const createMapsGallery = (query) => {
+  const encoded = encodeURIComponent(query);
+  return [
+    `https://maps.googleapis.com/maps/api/streetview?size=1280x720&location=${encoded}&fov=90&heading=20&pitch=0`,
+    `https://maps.googleapis.com/maps/api/streetview?size=1280x720&location=${encoded}&fov=90&heading=130&pitch=0`,
+    `https://maps.googleapis.com/maps/api/streetview?size=1280x720&location=${encoded}&fov=90&heading=250&pitch=0`,
+  ];
+};
 
 const basePlaces = [
   {
@@ -26,6 +32,13 @@ const basePlaces = [
       "Contato com a natureza",
     ],
     accent: "teal",
+    localCover: "/places/agua-marinha/cover.jpeg",
+    localGallery: [
+      "/places/agua-marinha/cover.jpeg",
+      "/places/agua-marinha/gallery-1.jpeg",
+      "/places/agua-marinha/gallery-2.jpeg",
+      "/places/agua-marinha/gallery-3.jpeg",
+    ],
   },
   {
     slug: "pousada-patrimonio-dos-sonhos",
@@ -45,6 +58,12 @@ const basePlaces = [
       "Ambiente familiar e tranquilo",
     ],
     accent: "gold",
+    localCover: "/places/patrimonio-dos-sonhos/cover.jpeg",
+    localGallery: [
+      "/places/patrimonio-dos-sonhos/cover.jpeg",
+      "/places/patrimonio-dos-sonhos/gallery-1.jpeg",
+      "/places/patrimonio-dos-sonhos/gallery-2.jpeg",
+    ],
   },
   {
     slug: "restaurante-vovo-niquinha",
@@ -63,6 +82,8 @@ const basePlaces = [
       "Boa parada após os passeios",
     ],
     accent: "rust",
+    localCover: "",
+    localGallery: [],
   },
   {
     slug: "toca-da-truta",
@@ -81,6 +102,8 @@ const basePlaces = [
       "Parada clássica para visitantes do parque",
     ],
     accent: "forest",
+    localCover: "",
+    localGallery: [],
   },
   {
     slug: "alto-caparao",
@@ -99,6 +122,8 @@ const basePlaces = [
       "Boa base para aventuras na serra",
     ],
     accent: "indigo",
+    localCover: "",
+    localGallery: [],
   },
   {
     slug: "pico-do-cristal",
@@ -117,20 +142,24 @@ const basePlaces = [
       "Integra o circuito do Parque Nacional",
     ],
     accent: "sky",
+    localCover: "",
+    localGallery: [],
   },
 ];
 
-export const places = basePlaces.map((place) => ({
-  ...place,
-  mapsUrl: createMapsUrl(place.mapsQuery),
-  embedMapUrl: createEmbedMapUrl(place.mapsQuery),
-  coverImage: createStaticMapImage(place.mapsQuery, "hybrid"),
-  gallery: [
-    createStaticMapImage(place.mapsQuery, "roadmap"),
-    createStaticMapImage(place.mapsQuery, "terrain"),
-    createStaticMapImage(place.mapsQuery, "satellite"),
-  ],
-}));
+export const places = basePlaces.map((place) => {
+  const mapsGallery = createMapsGallery(place.mapsQuery);
+  const hasLocalGallery = place.localGallery.length > 0;
+
+  return {
+    ...place,
+    mapsUrl: createMapsUrl(place.mapsQuery),
+    embedMapUrl: createEmbedMapUrl(place.mapsQuery),
+    imageSource: hasLocalGallery ? "repository" : "maps",
+    coverImage: hasLocalGallery ? place.localCover : mapsGallery[0],
+    gallery: hasLocalGallery ? place.localGallery : mapsGallery,
+  };
+});
 
 export const categories = [
   {
@@ -151,7 +180,7 @@ export const categories = [
 ];
 
 export const featuredStats = [
-  { value: "6", label: "paradas selecionadas" },
-  { value: "6", label: "imagens via Google Maps" },
+  { value: String(places.filter((place) => place.imageSource === "repository").length), label: "lugares com foto do repositório" },
+  { value: String(places.filter((place) => place.imageSource === "maps").length), label: "lugares com galeria do Maps" },
   { value: "1", label: "roteiro pensado para o Caparaó" },
 ];

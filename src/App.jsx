@@ -93,7 +93,7 @@ function HomePage() {
             <h1>Clique no banner e descubra os lugares separados por categoria.</h1>
             <p>
               A navegação agora está organizada por blocos de hospedagem, gastronomia e destinos,
-              com imagens do Google Maps para todos os lugares.
+              priorizando fotos locais quando existirem e usando galeria do Maps nos demais.
             </p>
 
             <div className="search-card">
@@ -207,6 +207,12 @@ function PlacePage() {
   }
 
   const relatedPlaces = places.filter((item) => item.slug !== slug).slice(0, 3);
+  const galleryEyebrow =
+    place.imageSource === "repository" ? "Fotos do repositório" : "Galeria do Google Maps";
+  const galleryTitle =
+    place.imageSource === "repository"
+      ? "Imagens locais priorizadas para este lugar"
+      : "Imagens buscadas na galeria do local no Maps";
   const heroStyle = place.coverImage
     ? {
         backgroundImage: `linear-gradient(180deg, rgba(9, 22, 26, 0.16) 0%, rgba(9, 22, 26, 0.86) 100%), url(${place.coverImage})`,
@@ -267,7 +273,7 @@ function PlacePage() {
             </article>
 
             <article className="content-block">
-              <SectionHeading eyebrow="Imagens do Google Maps" title="Prévia visual do entorno e acesso" />
+              <SectionHeading eyebrow={galleryEyebrow} title={galleryTitle} />
               <div className="gallery-grid">
                 {place.gallery.map((image, index) => (
                   <MapPreviewImage
@@ -359,7 +365,7 @@ function MapPreviewImage({ src, alt, className, accent }) {
   if (imageFailed) {
     return (
       <div className={`${className} gallery-fallback accent-${accent}`}>
-        <span>Prévia do Maps indisponível</span>
+        <span>Prévia de imagem indisponível</span>
       </div>
     );
   }
