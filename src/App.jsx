@@ -70,6 +70,9 @@ const navSections = [
   { id: "destinos", label: "Destinos" },
 ];
 
+const appBase = import.meta.env.BASE_URL || "/";
+const homeSectionHref = (id) => `${appBase}#${id}`;
+
 function App() {
   return (
     <Routes>
@@ -390,7 +393,7 @@ function MapPreviewImage({ src, alt, className, accent }) {
 function Header() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const sectionHref = (id) => (location.pathname === "/" ? `#${id}` : `/#${id}`);
+  const sectionHref = (id) => (location.pathname === "/" ? `#${id}` : homeSectionHref(id));
 
   useEffect(() => {
     setMenuOpen(false);
@@ -460,7 +463,7 @@ function Footer() {
           <h2>Categorias separadas, banner clicavel e mapa visivel em todas as paginas.</h2>
         </div>
         <div className="footer-links">
-          <a href="/#hospedagens">Explorar categorias</a>
+          <a href={homeSectionHref("hospedagens")}>Explorar categorias</a>
           <a href="https://www.google.com/maps/search/?api=1&query=Capara%C3%B3" target="_blank" rel="noreferrer">
             Abrir regiao no Maps
           </a>
