@@ -521,14 +521,19 @@ function Footer() {
   return (
     <footer className="site-footer">
       <div className="container footer-content">
-        <div>
-          <span className="section-label light">Cooperativa Caparao</span>
-          <h2>Categorias separadas, banner clicavel e mapa visivel em todas as paginas.</h2>
+        <div className="footer-signature">
+          <span className="section-label light">Creditos do projeto</span>
+          <p className="footer-made-by">Site desenvolvido por voce: Guilherme Martins.</p>
+          <p className="footer-contact-note">Se quiser, pode falar comigo pelos canais abaixo.</p>
         </div>
         <div className="footer-links">
-          <a href={homeSectionHref("hospedagens")}>Explorar categorias</a>
-          <a href="https://www.google.com/maps/search/?api=1&query=Capara%C3%B3" target="_blank" rel="noreferrer">
-            Abrir regiao no Maps
+          <a href="https://github.com/guimartinsa" target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          <a href="mailto:guimartinsa@gmail.com">Email</a>
+          <a href="tel:+5528999276894">Contato: (28) 99927-6894</a>
+          <a href="https://www.linkedin.com/in/guimartinsa" target="_blank" rel="noreferrer">
+            LinkedIn
           </a>
         </div>
       </div>
