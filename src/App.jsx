@@ -1,27 +1,27 @@
-import { useState } from "react";
-import { Link, NavLink, Route, Routes, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, NavLink, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { categories, featuredStats, places } from "./data/places";
 
 const features = [
   {
     title: "Curadoria regional",
     description:
-      "Os conteúdos foram adaptados para o Caparaó, com foco em pousadas, gastronomia e experiências locais.",
+      "Os conteudos foram adaptados para o Caparao, com foco em pousadas, gastronomia e experiencias locais.",
   },
   {
-    title: "Páginas individuais",
+    title: "Paginas individuais",
     description:
-      "Cada lugar ganhou uma página própria com descrição, destaques e mapa já carregado dentro da própria tela.",
+      "Cada lugar ganhou uma pagina propria com descricao, destaques e mapa ja carregado dentro da propria tela.",
   },
   {
     title: "Visual inspirado no layout de viagem",
     description:
-      "A landing mantém a linguagem de turismo do design de referência, mas com conteúdo real da cooperativa.",
+      "A landing mantem a linguagem de turismo do design de referencia, mas com conteudo real da cooperativa.",
   },
   {
     title: "Base pronta para crescer",
     description:
-      "A estrutura em React permite incluir novas páginas, imagens e filtros sem refazer o projeto do zero.",
+      "A estrutura em React permite incluir novas paginas, imagens e filtros sem refazer o projeto do zero.",
   },
 ];
 
@@ -29,7 +29,7 @@ const groupedSections = [
   {
     id: "hospedagens",
     eyebrow: "Hospedagens",
-    title: "Pousadas e refúgios para descansar com vista de serra",
+    title: "Pousadas e refugios para descansar com vista de serra",
     categories: ["Hospedagem"],
   },
   {
@@ -50,18 +50,24 @@ const itineraryCards = [
   {
     title: "Fim de semana com serra e pousada",
     description:
-      "Chegada em Pedra Menina, descanso em pousada e jantar com clima acolhedor para começar a viagem leve.",
+      "Chegada em Pedra Menina, descanso em pousada e jantar com clima acolhedor para comecar a viagem leve.",
   },
   {
     title: "Dia de sabores regionais",
     description:
-      "Combine a comida caseira do Vovó Niquinha com uma visita ao Toca da Truta entre os atrativos do parque.",
+      "Combine a comida caseira do Vovo Niquinha com uma visita ao Toca da Truta entre os atrativos do parque.",
   },
   {
     title: "Roteiro para altitude",
     description:
-      "Use Alto Caparaó como base e siga para trilhas, cachoeiras e a subida rumo ao Pico do Cristal.",
+      "Use Alto Caparao como base e siga para trilhas, cachoeiras e a subida rumo ao Pico do Cristal.",
   },
+];
+
+const navSections = [
+  { id: "hospedagens", label: "Hospedagens" },
+  { id: "gastronomia", label: "Gastronomia" },
+  { id: "destinos", label: "Destinos" },
 ];
 
 function App() {
@@ -89,17 +95,17 @@ function HomePage() {
         >
           <a className="hero-click-layer" href="#hospedagens" aria-label="Ir para hospedagens" />
           <div className="container hero-inner">
-            <span className="hero-kicker">Cooperativa Caparaó</span>
+            <span className="hero-kicker">Cooperativa Caparao</span>
             <h1>Clique no banner e descubra os lugares separados por categoria.</h1>
             <p>
-              A navegação agora está organizada por blocos de hospedagem, gastronomia e destinos,
+              A navegacao esta organizada por blocos de hospedagem, gastronomia e destinos,
               priorizando fotos locais quando existirem e usando galeria do Maps nos demais.
             </p>
 
             <div className="search-card">
               <div className="search-field">
                 <span>Onde ficar</span>
-                <strong>Pedra Menina, Patrimônio e Alto Caparaó</strong>
+                <strong>Pedra Menina, Patrimonio e Alto Caparao</strong>
               </div>
               <div className="search-field">
                 <span>O que explorar</span>
@@ -110,7 +116,7 @@ function HomePage() {
                 <strong>Descanso, gastronomia e trilhas</strong>
               </div>
             </div>
-            <span className="hero-hint">Clique em qualquer área do banner para ir direto às categorias.</span>
+            <span className="hero-hint">Clique em qualquer area do banner para ir direto as categorias.</span>
 
             <div className="hero-stats">
               {featuredStats.map((item) => (
@@ -123,10 +129,18 @@ function HomePage() {
           </div>
         </section>
 
+        <section className="quick-nav container" aria-label="Navegacao rapida por categorias">
+          {navSections.map((item) => (
+            <a key={item.id} className="quick-nav-chip" href={`#${item.id}`}>
+              {item.label}
+            </a>
+          ))}
+        </section>
+
         <section className="section container">
           <SectionHeading
             eyebrow="Por que esse projeto"
-            title="Uma base pronta para apresentar o Caparaó com mais impacto"
+            title="Uma base pronta para apresentar o Caparao com mais impacto"
           />
           <div className="feature-grid">
             {features.map((feature) => (
@@ -143,12 +157,12 @@ function HomePage() {
           <div className="container">
             <SectionHeading
               eyebrow="Categorias"
-              title="A estrutura da home foi separada para facilitar a navegação"
+              title="A estrutura da home foi separada para facilitar a navegacao"
             />
             <div className="category-grid">
               {categories.map((category) => (
                 <article key={category.title} className="category-card">
-                  <span>{String(category.count).padStart(2, "0")} opções</span>
+                  <span>{String(category.count).padStart(2, "0")} opcoes</span>
                   <h3>{category.title}</h3>
                   <p>{category.description}</p>
                 </article>
@@ -179,7 +193,7 @@ function HomePage() {
           <div className="container testimonial-shell">
             <div>
               <span className="section-label light">Roteiros sugeridos</span>
-              <h2>Monte uma jornada leve, gastronômica ou de aventura sem perder a identidade local.</h2>
+              <h2>Monte uma jornada leve, gastronomica ou de aventura sem perder a identidade local.</h2>
             </div>
             <div className="itinerary-grid">
               {itineraryCards.map((card) => (
@@ -208,7 +222,7 @@ function PlacePage() {
 
   const relatedPlaces = places.filter((item) => item.slug !== slug).slice(0, 3);
   const galleryEyebrow =
-    place.imageSource === "repository" ? "Fotos do repositório" : "Galeria do Google Maps";
+    place.imageSource === "repository" ? "Fotos do repositorio" : "Galeria do Google Maps";
   const galleryTitle =
     place.imageSource === "repository"
       ? "Imagens locais priorizadas para este lugar"
@@ -243,7 +257,7 @@ function PlacePage() {
         <section className="section container detail-layout">
           <div className="detail-content">
             <article className="content-block">
-              <SectionHeading eyebrow="Mapa carregado" title="Localização visível nesta página" />
+              <SectionHeading eyebrow="Mapa carregado" title="Localizacao visivel nesta pagina" />
               <div className="map-frame-shell">
                 <iframe
                   className="map-frame"
@@ -257,12 +271,12 @@ function PlacePage() {
             </article>
 
             <article className="content-block">
-              <SectionHeading eyebrow="Visão geral" title="O que faz esse lugar entrar no roteiro" />
+              <SectionHeading eyebrow="Visao geral" title="O que faz esse lugar entrar no roteiro" />
               <p className="long-text">{place.description}</p>
             </article>
 
             <article className="content-block">
-              <SectionHeading eyebrow="Destaques" title="Pontos principais da experiência" />
+              <SectionHeading eyebrow="Destaques" title="Pontos principais da experiencia" />
               <div className="highlight-grid">
                 {place.highlights.map((highlight) => (
                   <div key={highlight} className="highlight-pill">
@@ -290,9 +304,9 @@ function PlacePage() {
 
           <aside className="detail-sidebar">
             <article className="sidebar-card">
-              <span className="sidebar-label">Localização</span>
+              <span className="sidebar-label">Localizacao</span>
               <h3>{place.location}</h3>
-              <p>O mapa já está carregado na página e você também pode abrir no Google Maps.</p>
+              <p>O mapa ja esta carregado na pagina e voce tambem pode abrir no Google Maps.</p>
               <a className="secondary-button" href={place.mapsUrl} target="_blank" rel="noreferrer">
                 Ver rota no Maps
               </a>
@@ -348,7 +362,7 @@ function PlaceCard({ place }) {
         <p>{place.description}</p>
         <div className="place-card-actions">
           <Link className="text-link" to={`/lugares/${place.slug}`}>
-            Ver página
+            Ver pagina
           </Link>
           <a href={place.mapsUrl} target="_blank" rel="noreferrer">
             Mapa
@@ -365,7 +379,7 @@ function MapPreviewImage({ src, alt, className, accent }) {
   if (imageFailed) {
     return (
       <div className={`${className} gallery-fallback accent-${accent}`}>
-        <span>Prévia de imagem indisponível</span>
+        <span>Previa de imagem indisponivel</span>
       </div>
     );
   }
@@ -374,17 +388,63 @@ function MapPreviewImage({ src, alt, className, accent }) {
 }
 
 function Header() {
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const sectionHref = (id) => (location.pathname === "/" ? `#${id}` : `/#${id}`);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname, location.hash]);
+
   return (
     <header className="site-header" id="topo">
-      <div className="container header-inner">
-        <Link className="brand" to="/">
-          Cooperativa Caparaó
-        </Link>
-        <nav className="site-nav">
-          <a href="/#hospedagens">Hospedagens</a>
-          <a href="/#gastronomia">Gastronomia</a>
-          <a href="/#destinos">Destinos</a>
-          <NavLink to="/lugares/alto-caparao">Destino base</NavLink>
+      <div className="container header-shell">
+        <div className="topbar-main">
+          <Link className="brand" to="/">
+            <span className="brand-overline">Cooperativa Caparao</span>
+            <strong>Roteiro Caparao</strong>
+          </Link>
+          <div className="topbar-actions">
+            <a
+              className="topbar-cta"
+              href="https://www.google.com/maps/search/?api=1&query=Capara%C3%B3"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Mapa da regiao
+            </a>
+            <button
+              type="button"
+              className="menu-toggle"
+              aria-label="Abrir menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((current) => !current)}
+            >
+              {menuOpen ? "Fechar" : "Menu"}
+            </button>
+          </div>
+        </div>
+
+        <nav className="site-nav desktop-nav" aria-label="Navegacao principal">
+          {navSections.map((item) => (
+            <a key={item.id} className="nav-chip" href={sectionHref(item.id)}>
+              {item.label}
+            </a>
+          ))}
+          <NavLink className="nav-chip nav-chip-highlight" to="/lugares/alto-caparao">
+            Destino base
+          </NavLink>
+        </nav>
+
+        <nav className={`mobile-menu ${menuOpen ? "mobile-menu-open" : ""}`} aria-label="Menu mobile">
+          {navSections.map((item) => (
+            <a key={item.id} className="mobile-menu-link" href={sectionHref(item.id)}>
+              {item.label}
+            </a>
+          ))}
+          <NavLink className="mobile-menu-link mobile-menu-link-highlight" to="/lugares/alto-caparao">
+            Destino base
+          </NavLink>
         </nav>
       </div>
     </header>
@@ -396,13 +456,13 @@ function Footer() {
     <footer className="site-footer">
       <div className="container footer-content">
         <div>
-          <span className="section-label light">Cooperativa Caparaó</span>
-          <h2>Categorias separadas, banner clicável e mapa visível em todas as páginas.</h2>
+          <span className="section-label light">Cooperativa Caparao</span>
+          <h2>Categorias separadas, banner clicavel e mapa visivel em todas as paginas.</h2>
         </div>
         <div className="footer-links">
           <a href="/#hospedagens">Explorar categorias</a>
           <a href="https://www.google.com/maps/search/?api=1&query=Capara%C3%B3" target="_blank" rel="noreferrer">
-            Abrir região no Maps
+            Abrir regiao no Maps
           </a>
         </div>
       </div>
@@ -432,9 +492,9 @@ function NotFoundPage() {
       <Header />
       <main className="not-found">
         <div className="container not-found-card">
-          <span className="section-label">Página não encontrada</span>
-          <h1>Esse destino ainda não foi cadastrado.</h1>
-          <p>Volte para a página inicial para explorar os roteiros já montados.</p>
+          <span className="section-label">Pagina nao encontrada</span>
+          <h1>Esse destino ainda nao foi cadastrado.</h1>
+          <p>Volte para a pagina inicial para explorar os roteiros ja montados.</p>
           <Link className="primary-button" to="/">
             Ir para a home
           </Link>
