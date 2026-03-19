@@ -84,7 +84,7 @@ function App() {
 }
 
 function HomePage() {
-  const heroImage = places[0].coverImage;
+  const heroImage = `${import.meta.env.BASE_URL}banner.png`;
 
   return (
     <div className="page-shell">
